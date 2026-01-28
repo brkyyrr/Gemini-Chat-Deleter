@@ -1,0 +1,47 @@
+async function inatciSilme() {
+    // 1. Find all conversation menu buttons in Gemini
+    const menuButtons = document.querySelectorAll(
+        'button.conversation-actions-menu-button'
+    );
+    console.log(`${menuButtons.length} Gemini conversations found.`);
+
+    for (let btn of menuButtons) {
+        // Open the three-dot menu
+        btn.click();
+        await new Promise(r => setTimeout(r, 700));
+
+        // 2. Find "Delete" option in the menu
+        const menuOptions = document.querySelectorAll('.mat-mdc-menu-item');
+        const deleteOption = Array.from(menuOptions).find(el =>
+            /delete|sil/i.test(el.textContent)
+        );
+
+        if (deleteOption) {
+            deleteOption.click();
+            await new Promise(r => setTimeout(r, 1000));
+
+            // 3. Find confirm button in the dialog
+            const dialogButtons = document.querySelectorAll(
+                'mat-dialog-actions button'
+            );
+            const confirmButton = Array.from(dialogButtons).find(el =>
+                /delete|sil/i.test(el.textContent)
+            );
+
+            if (confirmButton) {
+                confirmButton.click();
+                console.log("✅ Conversation deleted.");
+            } else {
+                // Fallback: force-click primary button
+                const primaryBtn = document.querySelector('button.mat-primary');
+                if (primaryBtn) primaryBtn.click();
+            }
+        }
+
+        // Short delay before moving to the next conversation
+        await new Promise(r => setTimeout(r, 1200));
+    }
+}
+
+// Start the script
+inatciSilme();
